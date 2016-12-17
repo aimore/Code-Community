@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Photo Map App &#124; Instagram </title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.css" />
+    <link rel="stylesheet" href="css/Leaflet.Instagram.css" />
+
+
+	<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/reqwest/2.0.5/reqwest.min.js"></script>
+  	<script src="javascript/Leaflet.Instagram.Fancybox.js"></script>
+
+
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div id="map"></div>
+
+	<script>
+		var map = L.map('map');
+
+		L.tileLayer('https://api.mapbox.com/v4/aimore.cifo2gn8p01c3uckn586v7jlu/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYWltb3JlIiwiYSI6ImNpZm8yZ25meDAxYnpzeGx4dTUzYTgzZHMifQ.w-GIOKHTYQt6fEs--_VbHA', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			id: 'mapbox.streets'
+		}).addTo(map);
+
+		L.instagram('https://api.instagram.com/v1/users/217783145/media/recent?access_token=217783145.828eb7b.fcc63ca29f11438693b7fc7d63a82c5a').addTo(map);
+
+		function onLocationFound(e) {
+			var radius = e.accuracy / 2;
+
+			L.marker(e.latlng).addTo(map)
+				.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+			L.circle(e.latlng, radius).addTo(map);
+		}
+
+		function onLocationError(e) {
+			alert(e.message);
+		}
+
+		map.on('locationfound', onLocationFound);
+		map.on('locationerror', onLocationError);
+
+		map.locate({setView: true, maxZoom: 16});
+	</script>
+</body>
+</html>
+
